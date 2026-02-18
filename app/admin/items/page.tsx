@@ -99,22 +99,28 @@ export default function ItemsPage() {
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Items</h1>
+    <div className="max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Items</h1>
+          <p className="text-lg text-gray-600">
+            {items.length} {items.length === 1 ? "Item" : "Items"}
+          </p>
+        </div>
         <Link
           href="/admin/items/new"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+          className="px-6 py-3 text-lg font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 shadow-md hover:shadow-lg transition-all duration-200"
         >
           + Neues Item
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="bg-white shadow rounded-lg p-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">🔍 Filter</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-base font-semibold text-gray-700 mb-2">
               Suche
             </label>
             <input
@@ -122,20 +128,20 @@ export default function ItemsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Name oder Slug..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-base font-semibold text-gray-700 mb-2">
               Kategorie
             </label>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="">Alle</option>
+              <option value="">Alle Kategorien</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
@@ -145,111 +151,124 @@ export default function ItemsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-base font-semibold text-gray-700 mb-2">
               Status
             </label>
             <select
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Alle</option>
-              <option value="true">Aktiv</option>
-              <option value="false">Inaktiv</option>
+              <option value="true">✅ Aktiv</option>
+              <option value="false">❌ Inaktiv</option>
             </select>
           </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500">Laden...</div>
+        <div className="flex justify-center items-center h-96">
+          <div className="text-xl text-gray-500">Laden...</div>
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
-          <p className="text-gray-500 mb-4">Keine Items gefunden</p>
+        <div className="bg-white rounded-xl shadow-md p-12 text-center">
+          <div className="text-6xl mb-6">🎪</div>
+          <p className="text-xl text-gray-600 mb-6">Keine Items gefunden</p>
           <Link
             href="/admin/items/new"
-            className="text-blue-600 hover:text-blue-700"
+            className="inline-block px-6 py-3 text-lg font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition"
           >
             Erstes Item erstellen →
           </Link>
         </div>
       ) : (
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kategorie
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Bestand
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Preis
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Kaution
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Aktionen
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {items.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                    {item.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.category.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex px-2 text-xs font-semibold rounded-full ${
-                        item.active
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {item.active ? "Aktiv" : "Inaktiv"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {item.stockQuantity}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatCents(item.priceCents)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatCents(item.depositCents)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
-                    <Link
-                      href={`/admin/items/${item.id}/edit`}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      Bearbeiten
-                    </Link>
-                    <button
-                      onClick={() => setDeleteDialog({ isOpen: true, item })}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Löschen
-                    </button>
-                  </td>
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-5 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-5 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Kategorie
+                  </th>
+                  <th className="px-6 py-5 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-5 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Bestand
+                  </th>
+                  <th className="px-6 py-5 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Preis
+                  </th>
+                  <th className="px-6 py-5 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Kaution
+                  </th>
+                  <th className="px-6 py-5 text-right text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    Aktionen
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {items.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50 transition">
+                    <td className="px-6 py-5">
+                      <div className="text-base font-semibold text-gray-900">
+                        {item.name}
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <span className="text-base text-gray-600">
+                        {item.category.name}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-3 py-1.5 text-sm font-bold rounded-full ${
+                          item.active
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {item.active ? "✅ Aktiv" : "❌ Inaktiv"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <span className="text-base font-semibold text-gray-900">
+                        {item.stockQuantity}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <span className="text-base font-semibold text-gray-900">
+                        {formatCents(item.priceCents)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <span className="text-base font-semibold text-gray-900">
+                        {formatCents(item.depositCents)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5 whitespace-nowrap text-right text-base font-medium space-x-3">
+                      <Link
+                        href={`/admin/items/${item.id}/edit`}
+                        className="inline-block px-5 py-2.5 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition font-semibold"
+                      >
+                        ✏️ Bearbeiten
+                      </Link>
+                      <button
+                        onClick={() => setDeleteDialog({ isOpen: true, item })}
+                        className="inline-block px-5 py-2.5 text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition font-semibold"
+                      >
+                        🗑️ Löschen
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

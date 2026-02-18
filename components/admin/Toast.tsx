@@ -13,28 +13,38 @@ export function Toast({
   message,
   type = "success",
   onClose,
-  duration = 3000,
+  duration = 4000,
 }: ToastProps) {
   useEffect(() => {
     const timer = setTimeout(onClose, duration);
     return () => clearTimeout(timer);
   }, [duration, onClose]);
 
-  const bgColor = {
-    success: "bg-green-600",
-    error: "bg-red-600",
-    info: "bg-blue-600",
+  const config = {
+    success: {
+      bg: "bg-green-600",
+      icon: "✅",
+    },
+    error: {
+      bg: "bg-red-600",
+      icon: "❌",
+    },
+    info: {
+      bg: "bg-blue-600",
+      icon: "ℹ️",
+    },
   }[type];
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 animate-slide-up">
+    <div className="fixed bottom-6 right-6 z-50 animate-slide-up">
       <div
-        className={`${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3`}
+        className={`${config.bg} text-white px-8 py-5 rounded-xl shadow-2xl flex items-center space-x-4 min-w-[300px]`}
       >
-        <span>{message}</span>
+        <span className="text-3xl">{config.icon}</span>
+        <span className="text-lg font-semibold flex-1">{message}</span>
         <button
           onClick={onClose}
-          className="ml-2 text-white hover:text-gray-200"
+          className="text-white hover:text-gray-200 text-2xl font-bold ml-4"
         >
           ✕
         </button>

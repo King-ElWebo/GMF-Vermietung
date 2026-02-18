@@ -55,11 +55,11 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
   };
 
   return (
-    <div className="max-w-2xl">
-      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
-        <div className="space-y-4">
+    <div className="max-w-3xl">
+      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-8">
+        <div className="space-y-8">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-lg font-bold text-gray-900 mb-3">
               Name *
             </label>
             <input
@@ -67,13 +67,13 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-5 py-4 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="z.B. Hüpfburgen"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-lg font-bold text-gray-900 mb-3">
               Slug *
             </label>
             <input
@@ -85,39 +85,39 @@ export function CategoryForm({ category, mode }: CategoryFormProps) {
               }}
               required
               pattern="[a-z0-9-]+"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-5 py-4 text-lg font-mono border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="z.B. huepfburgen"
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Nur Kleinbuchstaben, Zahlen und Bindestriche
+            <p className="mt-2 text-sm text-gray-600">
+              ℹ️ Nur Kleinbuchstaben, Zahlen und Bindestriche erlaubt
             </p>
           </div>
         </div>
 
         {error && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
-            {error}
+          <div className="mt-6 p-5 bg-red-50 border-2 border-red-200 rounded-lg text-base text-red-700 font-semibold">
+            ❌ {error}
           </div>
         )}
 
-        <div className="mt-6 flex justify-end space-x-3">
+        <div className="mt-10 flex justify-end space-x-4">
           <button
             type="button"
             onClick={() => router.push("/admin/categories")}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+            className="px-6 py-3 text-base font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
           >
             Abbrechen
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+            className="px-8 py-3 text-base font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all duration-200"
           >
             {isSubmitting
               ? "Speichern..."
               : mode === "create"
-              ? "Erstellen"
-              : "Speichern"}
+              ? "✅ Erstellen"
+              : "💾 Speichern"}
           </button>
         </div>
       </form>
