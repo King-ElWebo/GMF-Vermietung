@@ -1,8 +1,27 @@
-import { getAllCategories } from "@/src/lib/services/category";
-import { ItemForm } from "@/components/admin/ItemForm";
+"use client";
 
-export default async function NewItemPage() {
-  const categories = await getAllCategories();
+import { useEffect, useState } from "react";
+import { ItemForm } from "@/components/admin/ItemForm";
+import { api } from "@/lib/utils/fetcher";
+
+export default function NewItemPage() {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get("/api/categories")
+      .then((res: any) => setCategories(res.data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-gray-500">Laden...</div>
+      </div>
+    );
+  }
 
   return (
     <div>
