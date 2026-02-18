@@ -1,0 +1,128 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { slugify } from "@/lib/utils/slugify";
+import { api } from "@/lib/utils/fetcher";
+import { Toast } from "./Toast";
+
+interface CategoryFormProps {
+  category?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  mode: "create" | "edit";
+}
+
+export function CategoryForm({ category, mode }: CategoryFormProps) {
+  const router = useRouter();
+  const [name, setName] = useState(category?.name || "");
+  const [slug, setSlug] = useState(category?.slug || "");
+  const [autoSlug, setAutoSlug] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  useEffect(() => {
+    if (autoSlug && name) {
+      setSlug(slugify(name));
+    }
+  }, [name, autoSlug]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      if (mode === "create") {
+        await api.post("/api/categories", { name, slug });
+        setToast({ message: "Kategorie erstellt", type: "success" });
+      } else {
+        await api.patch(`/api/categories/${category!.id}`, { name, slug });
+        setToast({ message: "Kategorie gespeichert", type: "success" });
+      }
+
+      setTimeout(() => router.push("/admin/categories"), 1000);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.data?.error || "Ein Fehler ist aufgetreten");
+      setToast({ message: err.data?.error || "Fehler", type: "error" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl">
+      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name *
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="z.B. Hüpfburgen"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Slug *
+            </label>
+            <input
+              type="text"
+              value={slug}
+              onChange={(e) => {
+                setSlug(e.target.value);
+                setAutoSlug(false);
+              }}
+              required
+              pattern="[a-z0-9-]+"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="z.B. huepfburgen"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Nur Kleinbuchstaben, Zahlen und Bindestriche
+            </p>
+          </div>
+        </div>
+
+        {error && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
+        <div className="mt-6 flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={() => router.push("/admin/categories")}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            Abbrechen
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isSubmitting
+              ? "Speichern..."
+              : mode === "create"
+              ? "Erstellen"
+              : "Speichern"}
+          </button>
+        </div>
+      </form>
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+    </div>
+  );
+}
