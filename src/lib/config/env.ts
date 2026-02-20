@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1, "DATABASE_URL ist erforderlich"),
-  DIRECT_URL: z.string().min(1, "DIRECT_URL ist erforderlich"),
   NEXT_PUBLIC_BASE_URL: z.string().default("http://localhost:3000"),
   NODE_ENV: z
     .enum(["development", "test", "production"])
@@ -25,4 +24,5 @@ function loadEnv(): Env {
   return parsed.data;
 }
 
+// Singleton – evaluated once at module load
 export const env = loadEnv();

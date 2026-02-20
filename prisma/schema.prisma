@@ -3,26 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
-
-// ─── Enums ────────────────────────────────────────────────────────────────────
-
-enum BookingStatus {
-  REQUESTED
-  APPROVED
-  REJECTED
-  CANCELLED
-}
-
-enum DeliveryType {
-  PICKUP
-  DELIVERY
-}
-
-// ─── Models ───────────────────────────────────────────────────────────────────
 
 model Category {
   id        String   @id @default(cuid())
@@ -30,32 +12,28 @@ model Category {
   slug      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  items Item[]
+  items     Item[]
 }
 
 model Item {
-  id            String  @id @default(cuid())
-  categoryId    String
-  name          String
-  slug          String  @unique
-  description   String?
-  active        Boolean @default(true)
-  stockQuantity Int     @default(1)
-  priceCents    Int?
-  depositCents  Int?
-
+  id              String        @id @default(cuid())
+  categoryId      String
+  name            String
+  slug            String        @unique
+  description     String?
+  active          Boolean       @default(true)
+  stockQuantity   Int           @default(1)
+  priceCents      Int?
+  depositCents    Int?
   /// Minutes to block before the rental starts
-  bufferBeforeMin Int @default(0)
+  bufferBeforeMin Int           @default(0)
   /// Minutes to block after the rental ends
-  bufferAfterMin  Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  category     Category      @relation(fields: [categoryId], references: [id])
-  images       ItemImage[]
-  bookingItems BookingItem[]
+  bufferAfterMin  Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  bookingItems    BookingItem[]
+  category        Category      @relation(fields: [categoryId], references: [id])
+  images          ItemImage[]
 
   @@index([categoryId])
   @@index([active])
@@ -66,8 +44,7 @@ model ItemImage {
   itemId    String
   url       String
   sortOrder Int    @default(0)
-
-  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  item      Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@index([itemId])
 }
@@ -84,29 +61,37 @@ model Booking {
   deliveryAddress String?
   notes           String?
   internalNote    String?
-
   /// Populated once calendar sync is implemented
   calendarStatus  String?
   calendarEventId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  bookingItems BookingItem[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  bookingItems    BookingItem[]
 
   @@index([status, startAt, endAt])
 }
 
 model BookingItem {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   bookingId String
   itemId    String
-  quantity  Int    @default(1)
-
-  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  item    Item    @relation(fields: [itemId], references: [id])
+  quantity  Int     @default(1)
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  item      Item    @relation(fields: [itemId], references: [id])
 
   @@unique([bookingId, itemId])
   @@index([bookingId])
   @@index([itemId])
+}
+
+enum BookingStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum DeliveryType {
+  PICKUP
+  DELIVERY
 }
